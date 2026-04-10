@@ -3,12 +3,17 @@ spring:
     name: documentator
 
   ai:
+    chat:
+      client:
+        observations:
+          include-prompt: true
+          include-completion: true
     mcp:
       client:
         sse:
           connections:
             excalidraw-mpc:
-              url: http://localhost:8000
+              url: ${EXCALIDRAW_MCP_URL}
               sse-endpoint: /sse
     openai:
       api-key: ${KIMI_API_KEY}
@@ -17,3 +22,11 @@ spring:
         options:
           model: kimi-k2-thinking
           temperature: 0.7
+github:
+  token: ${GH_TOKEN}
+
+logging:
+  level:
+    org:
+      springframework:
+        ai: DEBUG

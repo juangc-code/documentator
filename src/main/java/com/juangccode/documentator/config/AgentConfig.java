@@ -10,9 +10,9 @@ public class AgentConfig {
 
     @Bean
     public ChatClient chatClient(ChatClient.Builder builder,
-                                 SyncMcpToolCallbackProvider mcpToolCallbackProvider) {
+                                   SyncMcpToolCallbackProvider toolCallbackProvider) {
         return builder
-                .defaultTools(mcpToolCallbackProvider.getToolCallbacks())
+                .defaultToolCallbacks(toolCallbackProvider.getToolCallbacks())
                 .build();
     }
 }

@@ -1,0 +1,57 @@
+services:
+  documentator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: documentator-app
+    ports:
+      - "8080:8080"
+    environment:
+      - KIMI_API_KEY=${KIMI_API_KEY}
+      - GH_TOKEN=${GH_TOKEN}
+      - EXCALIDRAW_MCP_URL=${EXCALIDRAW_MCP_URL}
+    env_file:
+      - .env
+    networks:
+      - documentator-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    volumes:
+      - excalidraw_output:/output
+      - repo_dir:/repo_dir
+    depends_on:
+      - excalidraw-mcp
+
+
+  excalidraw-mcp:
+    image: excalidraw-mcp:latest
+    ports:
+      - "8000:8000"
+    volumes:
+      - excalidraw_output:/output      # PNGs written here, readable by Spring AI app too
+    restart: unless-stopped
+    # Chromium needs these for headless operation in Docker
+    shm_size: '256mb'
+    environment:
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+      PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH: /usr/bin/chromium
+    networks:
+      - documentator-network
+
+
+networks:
+  documentator-network:
+    driver: bridge
+
+volumes:
+  excalidraw_output:
+    driver: local
+    name: excalidraw-output
+  repo_dir:
+    driver: local
+    name: repo_dir

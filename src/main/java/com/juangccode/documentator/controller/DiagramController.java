@@ -1,5 +1,6 @@
 package com.juangccode.documentator.controller;
 
+import com.juangccode.documentator.model.DiagramRequest;
 import com.juangccode.documentator.service.DiagramService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,8 +17,8 @@ public class DiagramController {
     }
 
     @PostMapping
-    public ResponseEntity<String> postMessage(@RequestBody String message){
-        var response = diagramService.generateDiagram(message);
+    public ResponseEntity<String> postMessage(@RequestBody DiagramRequest request){
+        var response = diagramService.generateDiagram(request.url());
 
         return ResponseEntity.ok(response);
     }
