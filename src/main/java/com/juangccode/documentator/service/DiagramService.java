@@ -26,7 +26,7 @@ public class DiagramService {
         return chatClient.prompt("""
                                 You are exploring a code repository.
                                 
-                                1 - Clone the repository %s and checkout to a new branch based on main
+                                1 - Clone the repository %s into /repo_dir. Then checkout to a new branch based on main
                                 
                                 2 - Create diagrams:
                                     - Create an overview architecture diagram
@@ -40,6 +40,7 @@ public class DiagramService {
                                 6 - Create a pull request to main to remote origin
                                 
                                 Output:
+                                - Save output into /output
                                 - Response must be JSON format. Example: { "response": "SUCCESS"}
                                 - Respond only "SUCCESS" (on success)
                                 - Respond "ERROR" + summarize details of the errors (on errors). Example: {"response": "ERROR", "details": "Summarize error details"}

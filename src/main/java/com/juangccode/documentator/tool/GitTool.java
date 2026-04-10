@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -36,10 +37,12 @@ public class GitTool {
     @Tool(description = "Clone a repository into the current directory")
     public String clone(String repositoryUrl) {
         LOG.info("Cloning repository...");
-        var url = buildUrl(repositoryUrl);
         var path = repositoryUrl.substring(repositoryUrl.lastIndexOf('/') + 1)
                 .replace(".git", "");
-        var root = "/repo_dir" + path;
+        var root = "/repo_dir/" + path;
+        LOG.info("Workspace set to: " + root);
+        var url = buildUrl(repositoryUrl);
+
         var clone = List.of("git", "clone", url, root);
         var isSuccess = shellService.execute(clone, root).isSuccess();
         if (!isSuccess) {
@@ -47,7 +50,6 @@ public class GitTool {
         }
         configureRepo(repositoryUrl);
         workspaceContext.setCurrentWorkspace(root);
-        LOG.info("Workspace set to: " + root);
         return root;
     }
 
@@ -127,6 +129,9 @@ public class GitTool {
         LOG.info("Listing all files...");
         var command = List.of("git", "ls-files");
         var result = shellService.execute(command, root);
+        if (result == null) {
+            return Collections.emptyList();
+        }
         return Arrays.stream(result.output().split(" ")).toList();
     }
 
