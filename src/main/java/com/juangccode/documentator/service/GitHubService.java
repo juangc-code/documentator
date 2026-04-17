@@ -1,12 +1,8 @@
 package com.juangccode.documentator.service;
 
-import org.kohsuke.github.GHPullRequest;
-import org.kohsuke.github.GHRepository;
-import org.kohsuke.github.GitHub;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
-import java.io.IOException;
 import java.util.Map;
 
 @Service

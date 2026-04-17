@@ -8,6 +8,13 @@ spring:
         observations:
           include-prompt: true
           include-completion: true
+    google:
+      genai:
+        api-key: ${GEMINI_API_KEY}
+        chat:
+          options:
+            model: gemini-2.5-flash-lite
+            temperature: 0.2
     mcp:
       client:
         sse:
@@ -20,8 +27,8 @@ spring:
       base-url: https://api.moonshot.ai/
       chat:
         options:
-          model: kimi-k2-thinking
-          temperature: 0.7
+          model: kimi-k2.5
+#          temperature: 0.1
 github:
   token: ${GH_TOKEN}
 
@@ -30,3 +37,25 @@ logging:
     org:
       springframework:
         ai: DEBUG
+
+# Spring Retry Configuration
+spring-retry:
+  listeners:
+    enabled: true
+
+resilience4j:
+  ratelimiter:
+    instances:
+      kimiApi:
+        limit-for-period: 15           # requests allowed per period
+        limit-refresh-period: 1m       # resets every minute
+        timeout-duration: 10s          # wait up to 10s before throwing exception
+  retry:
+    instances:
+      kimiApi:
+        max-attempts: 3
+        wait-duration: 2s
+        exponential-backoff-multiplier: 2
+        retry-exceptions:
+          - com.google.genai.errors.ClientException
+          - org.springframework.ai.retry.NonTransientAiException

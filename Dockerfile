@@ -14,7 +14,7 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:21-jre-alpine
 
 # Install git for the application
-RUN apk add --no-cache git
+RUN apk add --no-cache git ripgrep
 
 WORKDIR /app
 
@@ -27,6 +27,7 @@ RUN addgroup -g 1001 documentator && \
 
 # Change ownership of the app directory
 RUN chown -R documentator:documentator /app
+RUN mkdir -p /repo_dir && chmod -R 777 /repo_dir
 
 # Switch to non-root user
 USER documentator

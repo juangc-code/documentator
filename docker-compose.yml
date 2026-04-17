@@ -22,7 +22,7 @@ services:
       retries: 3
       start_period: 40s
     volumes:
-      - ./excalidraw_output:/output
+      - ./excalidraw_output:/tmp/output
       - repo_dir:/repo_dir
     depends_on:
       - excalidraw-mcp
@@ -32,8 +32,8 @@ services:
     image: excalidraw-mcp:latest
     ports:
       - "8000:8000"
-#    volumes:
-#      - excalidraw_output:/output      # PNGs written here, readable by Spring AI app too
+    volumes:
+      - ./excalidraw_output:/tmp/output
     restart: unless-stopped
     # Chromium needs these for headless operation in Docker
     shm_size: '256mb'
@@ -49,9 +49,6 @@ networks:
     driver: bridge
 
 volumes:
-#  excalidraw_output:
-#    driver: local
-#    name: excalidraw-output
   repo_dir:
     driver: local
     name: repo_dir
